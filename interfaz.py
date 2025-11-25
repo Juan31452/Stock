@@ -31,7 +31,7 @@ def copy_button(text_to_copy):
     """
     return html(button_html, height=50)
 
-def render_main_interface(amenities_list, apartment_list, generate_whatsapp_message_func):
+def render_main_interface(stock_data, amenities_list, apartment_list, generate_whatsapp_message_func):
     """Dibuja la interfaz principal de la aplicación."""
     st.title("Inventario de Lencería y Amenities")
     st.markdown("Utiliza esta interfaz para registrar las cantidades y generar tu mensaje de **STOCK DIARIO** para WhatsApp.")
@@ -43,7 +43,7 @@ def render_main_interface(amenities_list, apartment_list, generate_whatsapp_mess
     )
 
     with st.form("main_form"):
-        new_stock_data = render_lenceria_inputs(is_expanded=False)
+        new_stock_data = render_lenceria_inputs(stock_data, is_expanded=False)
         selected_amenities = render_amenities_selector(amenities_list)
         submitted = st.form_submit_button("Guardar y Generar Mensaje")
 

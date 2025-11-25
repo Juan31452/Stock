@@ -75,4 +75,4 @@ AMENITIES_LIST = load_amenities()
 APARTMENT_LIST = load_apartments()
 
 # --- Renderizar la Interfaz Principal ---
-render_main_interface(AMENITIES_LIST, APARTMENT_LIST, generate_whatsapp_message)
+render_main_interface(st.session_state['stock_data'], AMENITIES_LIST, APARTMENT_LIST, generate_whatsapp_message)
