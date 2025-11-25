@@ -51,6 +51,64 @@ h1 {
     }
 }
 
+/* --- Ajustes generales para móviles Samsung / 360-412px --- */
+@media (max-width: 430px) {
+
+    /* Título más grande y legible */
+    h1 {
+        font-size: 1.6em;
+    }
+
+    /* Botón más cómodo para dedo grande 🐻 */
+    #copyBtn {
+        padding: 14px;
+        font-size: 17px;
+    }
+
+    /* Evitar cortes en las columnas */
+    div[data-testid="stHorizontalBlock"] > div:nth-of-type(1) {
+        flex-direction: column;
+        gap: 12px; /* Más espacio entre secciones */
+    }
+
+    /* Cada bloque ocupa ancho completo */
+    div[data-testid="stHorizontalBlock"] > div:nth-of-type(1) > div[data-testid="stVerticalBlock"] {
+        width: 100% !important;
+    }
+
+    /* Inputs más grandes y cómodos */
+    input[type="number"], input[type="text"] {
+        font-size: 17px !important;
+        padding: 10px !important;
+    }
+
+    /* Placeholder más suave y legible */
+    ::placeholder {
+        color: #777;
+        font-size: 16px;
+    }
+
+    /* Inputs de Lencería más ordenados */
+    [data-testid="stNumberInput"] {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    [data-testid="stNumberInput"] > label {
+        flex: 1;
+        min-width: 180px; /* Más ancho para Samsung */
+        font-size: 16px;
+    }
+
+    /* Expander más grande para ver mejor el texto */
+    [data-testid="stExpander"] > details > summary {
+        font-size: 1.2em;
+        padding: 10px 5px;
+    }
+}
+
+
 /* --- Estilos para Inputs de Lencería --- */
 
 /* Seleccionamos el contenedor de cada st.number_input */
