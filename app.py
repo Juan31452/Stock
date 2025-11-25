@@ -1,12 +1,14 @@
 import streamlit as st
 import pandas as pd
-from collections import OrderedDict
 from datetime import date
 from streamlit.components.v1 import html
 
 # --- Importar los módulos de la interfaz ---
 from lenceria import render_lenceria_inputs
 from amenities import render_amenities_selector, load_amenities
+
+# --- Importar datos ---
+from stock_inicial import STOCK_INICIAL
 
 # --- Configuración de la Página ---
 st.set_page_config(
@@ -15,26 +17,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- Datos de Inventario (Puedes expandir esto) ---
-# Usamos un diccionario para guardar los datos. En una app real, usarías una base de datos (como Firestore).
-# Inicializamos el stock con ceros.
-# Usamos OrderedDict para garantizar que el orden se mantenga siempre.
-STOCK_INICIAL = OrderedDict([
-    ("Sábanas Matrimonio", 0),
-    ("Sábana individual", 0),
-    ("Sábanas extra", 0),
-    ("F. Nórdica individual", 0),
-    ("F. nórdicas Matrimonio", 0),
-    ("F. nórdica Extra", 0),
-    ("Fundas almohadas", 0),
-    ("Protector Almohada", 0),
-    ("Protector Colchón", 0),
-    ("Toallas Grandes", 0),
-    ("Toallas Chicas", 0),
-    ("Pisa pies", 0),
-    ("Trapo de cocina", 0),
-    ("Bayeta amarilla", 0),
-])
+# --- Función para Cargar CSS Local ---
+def local_css(file_name):
+    """Carga un archivo CSS local en la aplicación Streamlit."""
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("style.css") # Llama a la función para cargar nuestro CSS
 
 # Inicializar o cargar el estado del stock
 if 'stock_data' not in st.session_state:

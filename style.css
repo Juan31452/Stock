@@ -1,0 +1,58 @@
+/* Cambiar la fuente y el color del título principal */
+h1 {
+    color: #1E88E5; /* Un tono de azul moderno */
+    font-family: 'sans-serif';
+}
+
+/* Estilizar el botón de copiar para que sea más llamativo y moderno */
+#copyBtn {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%; /* Ocupar todo el ancho del contenedor */
+    transition: background-color 0.3s ease;
+}
+
+#copyBtn:hover {
+    background-color: #45a049; /* Un verde un poco más oscuro al pasar el ratón */
+}
+
+/* --- Estilos para la versión móvil --- */
+@media (max-width: 640px) {
+    /* Estilo para el texto del placeholder en los inputs */
+    /* Usamos selectores específicos para navegadores comunes */
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: #888888; /* Un gris semi-transparente */
+        opacity: 1; /* Firefox necesita esto */
+    }
+
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: #888888;
+    }
+
+    ::-ms-input-placeholder { /* Microsoft Edge */
+        color: #888888;
+    }
+}
+
+/* --- Estilos para Inputs de Lencería --- */
+
+/* Seleccionamos el contenedor de cada st.number_input */
+[data-testid="stNumberInput"] {
+    display: flex;           /* Activa Flexbox para alinear hijos en una fila */
+    align-items: center;     /* Centra verticalmente la etiqueta y el input */
+    gap: 10px;               /* Espacio entre la etiqueta y el input */
+}
+
+/* Le damos a la etiqueta un espacio flexible para que empuje al input */
+[data-testid="stNumberInput"] > label {
+    flex: 1;                 /* La etiqueta ocupa todo el espacio disponible */
+    min-width: 150px;        /* Ancho mínimo para que no se comprima demasiado */
+    text-align: left;        /* Alinea el texto de la etiqueta a la izquierda */
+    margin-bottom: 0 !important; /* Elimina el margen inferior que pone Streamlit por defecto */
+}
