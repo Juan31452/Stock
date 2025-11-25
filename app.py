@@ -4,6 +4,10 @@ from collections import OrderedDict
 from datetime import date
 from streamlit.components.v1 import html
 
+# --- Importar los módulos de la interfaz ---
+from lenceria import render_lenceria_inputs
+from amenities import render_amenities_selector, load_amenities
+
 # --- Configuración de la Página ---
 st.set_page_config(
     page_title="Gestión de Stock de Lencería",
@@ -51,16 +55,6 @@ def load_apartments(filepath="apartamentos.txt"):
     except FileNotFoundError:
         # Si el archivo no se encuentra, devolver una lista con un valor por defecto
         return ["Archivo 'apartamentos.txt' no encontrado"]
-
-def load_amenities(filepath="Faltantes.txt"):
-    """Carga la lista de amenities desde un archivo de texto."""
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            amenities = [line.strip() for line in f if line.strip()]
-        return amenities if amenities else ["Lista de faltantes vacía o no encontrada"]
-    except FileNotFoundError:
-        return ["Archivo 'Faltantes.txt' no encontrado"]
-
 
 def generate_whatsapp_message(stock_data, apartment_name, missing_amenities):
     """Genera el mensaje completo de STOCK DIARIO en formato de texto."""
@@ -130,41 +124,23 @@ selected_apartment = st.selectbox(
     help="La lista se carga desde el archivo `apartamentos.txt`."
 )
 
-# --- 1. Formulario de Entrada de Datos ---
-with st.form("inventory_form"):
-    st.header("Actualizar Cantidades de Lencería")
+# --- Formulario Principal ---
+with st.form("main_form"):
+    # 1. Renderizar Lencería
+    new_stock_data = render_lenceria_inputs()
     
-    # Generar campos numéricos para cada ítem en el stock
-    new_stock_data = {}
-    for i, (item, current_count) in enumerate(st.session_state['stock_data'].items()):
-        # Usamos una sola columna para mantener el orden en PC y móvil
-        new_stock_data[item] = st.number_input(
-            f"{item}",
-            min_value=0,
-            value=current_count,
-            key=f"input_{item}",
-            step=1
-        )
-
-    st.divider()
-    st.header("Seleccionar Amenities Faltantes")
-    selected_amenities = st.multiselect(
-        "Elige los artículos que faltan:",
-        options=AMENITIES_LIST,
-        default=st.session_state['missing_amenities'],
-        help="Esta lista se carga desde el archivo `Faltantes.txt`."
-    )
+    # 2. Renderizar Amenities
+    selected_amenities = render_amenities_selector(AMENITIES_LIST)
     
-    # Botón para enviar el formulario y guardar los cambios
-    submitted = st.form_submit_button("Guardar Stock y Generar Mensaje")
+    # 3. Botón de Guardar al final
+    submitted = st.form_submit_button("Guardar y Generar Mensaje")
     
     if submitted:
-        # Al guardar, actualizamos el estado de la sesión
-        st.session_state['missing_amenities'] = selected_amenities
         st.session_state['stock_data'] = new_stock_data
-        st.success("¡Stock guardado con éxito! El mensaje de WhatsApp está listo abajo.")
+        st.session_state['missing_amenities'] = selected_amenities
+        st.success("¡Stock guardado con éxito!")
 
-# --- 2. Generación del Mensaje de Salida ---
+# --- Generación del Mensaje de Salida ---
 
 st.divider()
 st.header("Mensaje de WhatsApp Generado")
