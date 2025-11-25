@@ -141,3 +141,17 @@ h1 {
     font-size: 1.1em;
     color: #1E88E5; /* Mismo azul que el título principal */
 }
+
+/* Fix universal para inputs de Streamlit */
+input[type="number"], input[type="text"] {
+    color: #000 !important;
+    background-color: #fff !important;
+    font-size: 17px !important;
+    padding: 10px !important;
+    height: 42px !important;
+}
+
+/* Evitar que el número se oculte */
+[data-testid="stNumberInput"] {
+    overflow: visible !important;
+}
