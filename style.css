@@ -57,7 +57,7 @@ h1 {
 [data-testid="stNumberInput"] {
     display: flex;           /* Activa Flexbox para alinear hijos en una fila */
     align-items: center;     /* Centra verticalmente la etiqueta y el input */
-    gap: 10px;               /* Espacio entre la etiqueta y el input */
+    gap: 5px;               /* Espacio entre la etiqueta y el input */
 }
 
 /* Le damos a la etiqueta un espacio flexible para que empuje al input */
