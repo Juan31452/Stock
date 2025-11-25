@@ -1,11 +1,9 @@
 import streamlit as st
-import pandas as pd
 from datetime import date
-from streamlit.components.v1 import html
 
 # --- Importar los módulos de la interfaz ---
-from lenceria import render_lenceria_inputs
-from amenities import render_amenities_selector, load_amenities
+from amenities import load_amenities
+from interfaz import render_main_interface
 
 # --- Importar datos ---
 from stock_inicial import STOCK_INICIAL
@@ -68,88 +66,13 @@ def generate_whatsapp_message(stock_data, apartment_name, missing_amenities):
     if missing_amenities:
         message += "AMENITES FALTANTES\n"
         for amenity in missing_amenities:
-            # Añadir los amenities faltantes seleccionados por el usuario
             message += f"- {amenity}\n"
             
     return message
 
-def copy_button(text_to_copy):
-    """
-    Genera un botón HTML que copia el texto proporcionado al portapapeles.
-    """
-    # Escapamos las comillas y saltos de línea para que no rompan el string de JavaScript
-    escaped_text = text_to_copy.replace('`', '\\`').replace("'", "\\'").replace('\n', '\\n')
-
-    # El código HTML y JavaScript para el botón
-    button_html = f"""
-    <button id="copyBtn" onclick="copyToClipboard()">
-        📲 Copiar Mensaje al Portapapeles
-    </button>
-    <script>
-    function copyToClipboard() {{
-        navigator.clipboard.writeText(`{escaped_text}`).then(function() {{
-            var btn = document.getElementById('copyBtn');
-            btn.innerText = '✅ ¡Copiado!';
-            setTimeout(function(){{ btn.innerText = '📲 Copiar Mensaje al Portapapeles'; }}, 2000);
-        }}, function(err) {{
-            console.error('Error al copiar: ', err);
-        }});
-    }}
-    </script>
-    """
-    return html(button_html, height=50)
-
-# --- Interfaz de Streamlit ---
-
-st.title("Inventario de Lencería y Amenities")
-st.markdown("Utiliza esta interfaz para registrar las cantidades y generar tu mensaje de **STOCK DIARIO** para WhatsApp.")
-
-# --- Cargar y seleccionar apartamento ---
+# --- Carga de datos inicial ---
 AMENITIES_LIST = load_amenities()
 APARTMENT_LIST = load_apartments()
-selected_apartment = st.selectbox(
-    "🏠 Selecciona el Apartamento",
-    options=APARTMENT_LIST,
-    help="La lista se carga desde el archivo `apartamentos.txt`."
-)
 
-# --- Formulario Principal ---
-with st.form("main_form"):
-    # 1. Renderizar Lencería
-    new_stock_data = render_lenceria_inputs()
-    
-    # 2. Renderizar Amenities
-    selected_amenities = render_amenities_selector(AMENITIES_LIST)
-    
-    # 3. Botón de Guardar al final
-    submitted = st.form_submit_button("Guardar y Generar Mensaje")
-    
-    if submitted:
-        st.session_state['stock_data'] = new_stock_data
-        st.session_state['missing_amenities'] = selected_amenities
-        st.success("¡Stock guardado con éxito!")
-
-# --- Generación del Mensaje de Salida ---
-
-st.divider()
-st.header("Mensaje de WhatsApp Generado")
-
-# Generar el mensaje completo con los datos guardados en el estado de la sesión
-final_message = generate_whatsapp_message(
-    st.session_state['stock_data'],
-    selected_apartment,
-    st.session_state['missing_amenities']
-)
-
-st.text_area(
-    "Mensaje listo para enviar (Copia el contenido):",
-    value=final_message,
-    height=400
-)
-
-# --- 3. Botón de Copiar al Portapapeles (Automatización) ---
-
-# Usamos nuestra función personalizada para crear un botón de copiado real
-copy_button(final_message)
-
-st.info("💡 Consejo: Haz clic en el botón de 'Copiar Mensaje' y luego pégalo directamente en WhatsApp. ¡Ya no necesitas copiar manualmente!")
+# --- Renderizar la Interfaz Principal ---
+render_main_interface(AMENITIES_LIST, APARTMENT_LIST, generate_whatsapp_message)
