@@ -110,25 +110,15 @@ with st.form("inventory_form"):
     # Generar campos numéricos para cada ítem en el stock
     new_stock_data = {}
     for i, (item, current_count) in enumerate(st.session_state['stock_data'].items()):
-        # Distribución en dos columnas para mejor uso móvil/tablet
-        if i % 2 == 0:
-            with col1:
-                new_stock_data[item] = st.number_input(
-                    f"{item}",
-                    min_value=0,
-                    value=current_count,
-                    key=f"input_{item}",
-                    step=1
-                )
-        else:
-            with col2:
-                new_stock_data[item] = st.number_input(
-                    f"{item}",
-                    min_value=0,
-                    value=current_count,
-                    key=f"input_{item}",
-                    step=1
-                )
+        target_col = col1 if i % 2 == 0 else col2
+        with target_col:
+            new_stock_data[item] = st.number_input(
+                f"{item}",
+                min_value=0,
+                value=current_count,
+                key=f"input_{item}",
+                step=1
+            )
 
     st.divider()
     st.header("Seleccionar Amenities Faltantes")
@@ -140,7 +130,7 @@ with st.form("inventory_form"):
     )
     
     # Botón para enviar el formulario y guardar los cambios
-    submitted = st.form_submit_button("Guardar Stock Actualizado")
+    submitted = st.form_submit_button("Guardar Stock y Generar Mensaje")
     
     if submitted:
         # Al guardar, actualizamos el estado de la sesión
@@ -177,8 +167,3 @@ st.download_button(
 )
 
 st.info("💡 Consejo: Haz clic en el botón de 'Copiar Mensaje' y luego pégalo directamente en WhatsApp. ¡Ya no necesitas copiar manualmente!")
-
-# --- Mostrar tabla de resumen (opcional) ---
-st.sidebar.header("Resumen Rápido de Stock")
-df_summary = pd.DataFrame(st.session_state['stock_data'].items(), columns=['Artículo', 'Cantidad'])
-st.sidebar.dataframe(df_summary, use_container_width=True)
