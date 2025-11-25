@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
+from collections import OrderedDict
 from datetime import date
+from streamlit.components.v1 import html
 
 # --- Configuración de la Página ---
 st.set_page_config(
@@ -12,22 +14,23 @@ st.set_page_config(
 # --- Datos de Inventario (Puedes expandir esto) ---
 # Usamos un diccionario para guardar los datos. En una app real, usarías una base de datos (como Firestore).
 # Inicializamos el stock con ceros.
-STOCK_INICIAL = {
-    "Sábanas Matrimonio": 0,
-    "Sábana individual": 0,
-    "Sábanas extra": 0,
-    "F. Nórdica individual": 0,
-    "F. nórdicas Matrimonio": 0,
-    "F. nórdica Extra": 0,
-    "Fundas almohadas": 0,
-    "Protector Almohada": 0,
-    "Protector Colchón": 0,
-    "Toallas Grandes": 0,
-    "Toallas Chicas": 0,
-    "Pisa pies": 0,
-    "Trapo de cocina": 0,
-    "Bayeta amarilla": 0,
-}
+# Usamos OrderedDict para garantizar que el orden se mantenga siempre.
+STOCK_INICIAL = OrderedDict([
+    ("Sábanas Matrimonio", 0),
+    ("Sábana individual", 0),
+    ("Sábanas extra", 0),
+    ("F. Nórdica individual", 0),
+    ("F. nórdicas Matrimonio", 0),
+    ("F. nórdica Extra", 0),
+    ("Fundas almohadas", 0),
+    ("Protector Almohada", 0),
+    ("Protector Colchón", 0),
+    ("Toallas Grandes", 0),
+    ("Toallas Chicas", 0),
+    ("Pisa pies", 0),
+    ("Trapo de cocina", 0),
+    ("Bayeta amarilla", 0),
+])
 
 # Inicializar o cargar el estado del stock
 if 'stock_data' not in st.session_state:
@@ -87,6 +90,32 @@ def generate_whatsapp_message(stock_data, apartment_name, missing_amenities):
             
     return message
 
+def copy_button(text_to_copy):
+    """
+    Genera un botón HTML que copia el texto proporcionado al portapapeles.
+    """
+    # Escapamos las comillas y saltos de línea para que no rompan el string de JavaScript
+    escaped_text = text_to_copy.replace('`', '\\`').replace("'", "\\'").replace('\n', '\\n')
+
+    # El código HTML y JavaScript para el botón
+    button_html = f"""
+    <button id="copyBtn" onclick="copyToClipboard()">
+        📲 Copiar Mensaje al Portapapeles
+    </button>
+    <script>
+    function copyToClipboard() {{
+        navigator.clipboard.writeText(`{escaped_text}`).then(function() {{
+            var btn = document.getElementById('copyBtn');
+            btn.innerText = '✅ ¡Copiado!';
+            setTimeout(function(){{ btn.innerText = '📲 Copiar Mensaje al Portapapeles'; }}, 2000);
+        }}, function(err) {{
+            console.error('Error al copiar: ', err);
+        }});
+    }}
+    </script>
+    """
+    return html(button_html, height=50)
+
 # --- Interfaz de Streamlit ---
 
 st.title("Inventario de Lencería y Amenities")
@@ -105,20 +134,17 @@ selected_apartment = st.selectbox(
 with st.form("inventory_form"):
     st.header("Actualizar Cantidades de Lencería")
     
-    col1, col2 = st.columns(2)
-    
     # Generar campos numéricos para cada ítem en el stock
     new_stock_data = {}
     for i, (item, current_count) in enumerate(st.session_state['stock_data'].items()):
-        target_col = col1 if i % 2 == 0 else col2
-        with target_col:
-            new_stock_data[item] = st.number_input(
-                f"{item}",
-                min_value=0,
-                value=current_count,
-                key=f"input_{item}",
-                step=1
-            )
+        # Usamos una sola columna para mantener el orden en PC y móvil
+        new_stock_data[item] = st.number_input(
+            f"{item}",
+            min_value=0,
+            value=current_count,
+            key=f"input_{item}",
+            step=1
+        )
 
     st.divider()
     st.header("Seleccionar Amenities Faltantes")
@@ -158,12 +184,7 @@ st.text_area(
 
 # --- 3. Botón de Copiar al Portapapeles (Automatización) ---
 
-# Streamlit tiene una función integrada para esto, que funciona muy bien.
-st.download_button(
-    label="📲 Copiar Mensaje al Portapapeles",
-    data=final_message,
-    file_name="stock_diario.txt",
-    mime="text/plain"
-)
+# Usamos nuestra función personalizada para crear un botón de copiado real
+copy_button(final_message)
 
 st.info("💡 Consejo: Haz clic en el botón de 'Copiar Mensaje' y luego pégalo directamente en WhatsApp. ¡Ya no necesitas copiar manualmente!")
