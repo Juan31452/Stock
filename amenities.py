@@ -9,16 +9,16 @@ def load_amenities(filepath="Faltantes.txt"):
     except FileNotFoundError:
         return ["Archivo 'Faltantes.txt' no encontrado"]
 
-def render_amenities_selector(amenities_list):
-    """Dibuja el selector para los amenities faltantes."""
-    st.divider()
-    st.header("Seleccionar Amenities Faltantes")
-    
-    selected_amenities = st.multiselect(
-        "Elige los artículos que faltan:",
-        options=amenities_list,
-        default=st.session_state.get('missing_amenities', []),
-        key="amenities_selector",
-        help="Esta lista se carga desde el archivo `Faltantes.txt`."
-    )
-    return selected_amenities
+def render_amenities_selector(amenities_list, is_expanded=True):
+    """Dibuja el selector para los amenities faltantes dentro de un expansor."""
+    with st.expander("🧺 Seleccionar Amenities Faltantes", expanded=is_expanded):
+        st.info("Elige los artículos que faltan de la lista.")
+        
+        selected_amenities = st.multiselect(
+            "Artículos faltantes:",
+            options=amenities_list,
+            default=st.session_state.get('missing_amenities', []),
+            key="amenities_selector",
+            help="Esta lista se carga desde el archivo `Faltantes.txt`."
+        )
+        return selected_amenities
