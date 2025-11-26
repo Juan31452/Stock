@@ -36,11 +36,19 @@ def render_main_interface(stock_data, amenities_list, apartment_list, generate_w
     st.title("Inventario de Lencería y Amenities")
     st.markdown("Utiliza esta interfaz para registrar las cantidades y generar tu mensaje de **STOCK DIARIO** para WhatsApp.")
 
+    # Inicializar el apartamento seleccionado si no existe en el estado de sesión
+    if 'selected_apartment' not in st.session_state:
+        st.session_state['selected_apartment'] = apartment_list[0] if apartment_list else None
+
+    # Usamos st.selectbox, que es ideal para listas largas y permite buscar.
     selected_apartment = st.selectbox(
         "🏠 Selecciona el Apartamento",
         options=apartment_list,
-        help="La lista se carga desde el archivo `apartamentos.txt`."
+        index=apartment_list.index(st.session_state.get('selected_apartment', apartment_list[0])) if st.session_state.get('selected_apartment') in apartment_list else 0,
+        help="Puedes escribir para buscar en la lista. La selección se guarda automáticamente."
     )
+    # Actualizamos el estado de la sesión con la nueva selección
+    st.session_state['selected_apartment'] = selected_apartment
 
     with st.form("main_form"):
         new_stock_data = render_lenceria_inputs(stock_data, is_expanded=False)

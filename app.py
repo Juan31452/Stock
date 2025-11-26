@@ -1,8 +1,8 @@
 import streamlit as st
 from datetime import date
 
-# --- Importar los módulos de la interfaz ---
-from amenities import load_amenities
+# --- Importar módulos ---
+from data_loader import load_amenities, load_apartments
 from interfaz import render_main_interface
 
 # --- Importar datos ---
@@ -31,17 +31,6 @@ if 'missing_amenities' not in st.session_state:
     st.session_state['missing_amenities'] = []
 
 # --- Funciones de Lógica ---
-
-def load_apartments(filepath="apartamentos.txt"):
-    """Carga la lista de apartamentos desde un archivo de texto."""
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            # Leer cada línea, quitar espacios en blanco y filtrar las vacías
-            apartments = [line.strip() for line in f if line.strip()]
-        return apartments if apartments else ["Lista vacía o no encontrada"]
-    except FileNotFoundError:
-        # Si el archivo no se encuentra, devolver una lista con un valor por defecto
-        return ["Archivo 'apartamentos.txt' no encontrado"]
 
 def generate_whatsapp_message(stock_data, apartment_name, missing_amenities):
     """Genera el mensaje completo de STOCK DIARIO en formato de texto."""
