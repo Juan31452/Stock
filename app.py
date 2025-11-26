@@ -18,7 +18,7 @@ st.set_page_config(
 # --- Función para Cargar CSS Local ---
 def local_css(file_name):
     """Carga un archivo CSS local en la aplicación Streamlit."""
-    with open(file_name) as f:
+    with open(file_name, "r", encoding="utf-8") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 local_css("style.css") # Llama a la función para cargar nuestro CSS
