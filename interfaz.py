@@ -1,35 +1,8 @@
 import streamlit as st
-from streamlit.components.v1 import html
 
-# --- Importar los módulos de la interfaz ---
-from lenceria import render_lenceria_inputs
-from amenities import render_amenities_selector
-
-def copy_button(text_to_copy):
-    """
-    Genera un botón HTML que copia el texto proporcionado al portapapeles.
-    """
-    # Escapamos las comillas y saltos de línea para que no rompan el string de JavaScript
-    escaped_text = text_to_copy.replace('`', '\\`').replace("'", "\\'").replace('\n', '\\n')
-
-    # El código HTML y JavaScript para el botón
-    button_html = f"""
-    <button id="copyBtn" onclick="copyToClipboard()">
-        📲 Copiar Mensaje al Portapapeles
-    </button>
-    <script>
-    function copyToClipboard() {{
-        navigator.clipboard.writeText(`{escaped_text}`).then(function() {{
-            var btn = document.getElementById('copyBtn');
-            btn.innerText = '✅ ¡Copiado!';
-            setTimeout(function(){{ btn.innerText = '📲 Copiar Mensaje al Portapapeles'; }}, 2000);
-        }}, function(err) {{
-            console.error('Error al copiar: ', err);
-        }});
-    }}
-    </script>
-    """
-    return html(button_html, height=50)
+from interfaz_amenities import render_amenities_interface
+from interfaz_lenceria import render_lenceria_interface
+from boton_copiar import copy_button
 
 def render_main_interface(stock_data, amenities_list, apartment_list, generate_whatsapp_message_func):
     """Dibuja la interfaz principal de la aplicación."""
@@ -50,23 +23,19 @@ def render_main_interface(stock_data, amenities_list, apartment_list, generate_w
     # Actualizamos el estado de la sesión con la nueva selección
     st.session_state['selected_apartment'] = selected_apartment
 
-    with st.form("main_form"):
-        new_stock_data = render_lenceria_inputs(stock_data, is_expanded=False)
-        selected_amenities = render_amenities_selector(amenities_list)
-        submitted = st.form_submit_button("Guardar y Generar Mensaje")
+    # --- Renderizar la interfaz de lencería ---
+    render_lenceria_interface(stock_data)
 
-        if submitted:
-            st.session_state['stock_data'] = new_stock_data
-            st.session_state['missing_amenities'] = selected_amenities
-            st.success("¡Stock guardado con éxito!")
+    # --- Renderizar la interfaz de amenities ---
+    render_amenities_interface(amenities_list, generate_whatsapp_message_func)
 
     st.divider()
     st.header("Mensaje de WhatsApp Generado")
 
     final_message = generate_whatsapp_message_func(
-        st.session_state['stock_data'],
-        selected_apartment,
-        st.session_state['missing_amenities']
+        st.session_state.get('stock_data', {}),
+        selected_apartment, # El apartamento seleccionado se mantiene
+        st.session_state.get('missing_amenities', []) # Usamos los amenities guardados en la sesión
     )
 
     st.text_area(
