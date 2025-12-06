@@ -23,11 +23,21 @@ def render_main_interface(stock_data, amenities_list, apartment_list, generate_w
     # Actualizamos el estado de la sesión con la nueva selección
     st.session_state['selected_apartment'] = selected_apartment
 
-    # --- Renderizar la interfaz de lencería ---
-    render_lenceria_interface(stock_data)
+    with st.form("main_form"):
+        st.subheader("📝 Registrar Cantidades")
+        st.info("Introduce las cantidades de lencería y selecciona los amenities que faltan. Luego, haz clic en 'Guardar Cambios'.")
 
-    # --- Renderizar la interfaz de amenities ---
-    render_amenities_interface(amenities_list, generate_whatsapp_message_func)
+        # --- Renderizar la interfaz de lencería (ahora devuelve los datos) ---
+        new_stock_data = render_lenceria_interface(stock_data)
+
+        # --- Renderizar la interfaz de amenities (ahora devuelve la selección) ---
+        selected_amenities = render_amenities_interface(amenities_list, generate_whatsapp_message_func)
+
+        submitted = st.form_submit_button("💾 Guardar Cambios")
+        if submitted:
+            st.session_state['stock_data'] = new_stock_data
+            st.session_state['missing_amenities'] = selected_amenities
+            st.success("¡Stock y amenities guardados con éxito!")
 
     st.divider()
     st.header("Mensaje de WhatsApp Generado")
