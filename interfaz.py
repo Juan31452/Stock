@@ -7,7 +7,7 @@ from boton_copiar import copy_button
 def render_main_interface(stock_data, amenities_list, apartment_list, generate_whatsapp_message_func):
     """Dibuja la interfaz principal de la aplicación."""
     st.title("Inventario de Lencería y Amenities")
-    st.markdown("Utiliza esta interfaz para registrar las cantidades y generar tu mensaje de **STOCK DIARIO** para WhatsApp.")
+    st.markdown("Utiliza esta interfaz para registrar las cantidades y generar tu **pedido de stock** para WhatsApp.")
 
     # Inicializar el apartamento seleccionado si no existe en el estado de sesión
     if 'selected_apartment' not in st.session_state:

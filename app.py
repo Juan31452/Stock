@@ -1,4 +1,5 @@
 import streamlit as st
+from copy import deepcopy
 from datetime import date
 
 # --- Importar módulos ---
@@ -24,8 +25,11 @@ def local_css(file_name):
 local_css("style.css") # Llama a la función para cargar nuestro CSS
 
 # Inicializar o cargar el estado del stock
-if 'stock_data' not in st.session_state:
-    st.session_state['stock_data'] = STOCK_INICIAL.copy()
+if (
+    not isinstance(st.session_state.get('stock_data'), dict)
+    or tuple(st.session_state['stock_data']) != tuple(STOCK_INICIAL)
+):
+    st.session_state['stock_data'] = deepcopy(STOCK_INICIAL)
 # Inicializar la lista de amenities faltantes
 if 'missing_amenities' not in st.session_state:
     st.session_state['missing_amenities'] = []
@@ -33,31 +37,50 @@ if 'missing_amenities' not in st.session_state:
 # --- Funciones de Lógica ---
 
 def generate_whatsapp_message(stock_data, apartment_name, missing_amenities):
-    """Genera el mensaje completo de STOCK DIARIO en formato de texto."""
-    
-    # Obtener la fecha actual
-    today = date.today().strftime("%d/%m/%y")
-    
-    # 1. Encabezado
-    message = f"Plantilla *STOCK DIARIO*\n"
-    message += f"🏠Apartamento:\n{apartment_name}\n"
-    message += f"📆Fecha:{today}\n"
-    message += f"👤Limpieza: MÓNICA \n"
-    message += "----------------------\n----------------------\n"
-    
-    # 2. Sección Lencería/Stock
-    message += "🛏️ *Lencería*\n"
-    for item, count in stock_data.items():
-        # Añadir cada ítem de stock con su cantidad actual
-        message += f"- {item}: {count}\n"
-        
-    # 3. Sección Amenities
+    """Genera el pedido de stock con el formato preparado para WhatsApp."""
+    today = date.today().strftime("%d/%m/%Y")
+    lines = [
+        "🏠 PEDIDO 🏠",
+        "",
+        f"Apartamento: {apartment_name}",
+        f"📅 Fecha: {today}",
+        "👤 Limpiador/a:",
+        "",
+        "🛏️ ROPA DE CAMA",
+        "",
+    ]
+
+    section_icons = {
+        "Cama 180": "🔵",
+        "Cama 160": "🟢",
+        "Camas individuales": "🟠",
+    }
+    for section in ("Cama 180", "Cama 160", "Camas individuales"):
+        icon = section_icons[section]
+        lines.append(f"{icon} {section}")
+        for item, count in stock_data[section].items():
+            lines.append(f"{icon} {item}: {count}")
+        lines.append("")
+
+    lines.append("▫️ Fundas de almohada")
+    for item, count in stock_data["Fundas de almohada"].items():
+        lines.append(f"{item}: {count}")
+    lines.extend(["", "🛁 TOALLAS"])
+    lines.extend(
+        f"{item}: {count}" for item, count in stock_data["Toallas"].items()
+    )
+    lines.extend([
+        "",
+        "🧴 AMENITIES Y PRODUCTOS",
+        "",
+        "Paño de cocina",
+        "Bayeta amarilla",
+    ])
     if missing_amenities:
-        message += "AMENITES FALTANTES\n"
-        for amenity in missing_amenities:
-            message += f"- {amenity}\n"
-            
-    return message
+        lines.append("")
+        lines.extend(f"- {amenity}" for amenity in missing_amenities)
+    lines.extend(["", "📌 OBSERVACIONES", "Sin Observaciones"])
+    return "\n".join(lines)
 
 # --- Carga de datos inicial ---
 AMENITIES_LIST = load_amenities()
