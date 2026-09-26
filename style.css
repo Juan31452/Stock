@@ -84,15 +84,22 @@ h1 {
 
     /* Inputs de Lencería más ordenados */
     [data-testid="stNumberInput"] {
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 12px;
     }
 
-    [data-testid="stNumberInput"] > label {
-        flex: 1;
-        min-width: 180px; /* Más ancho para Samsung */
+    [data-testid="stNumberInput"] label {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin-bottom: 4px !important;
         font-size: 16px;
+    }
+
+    [data-testid="stNumberInput"] input[type="number"] {
+        width: 100% !important;
+        box-sizing: border-box;
     }
 
     /* Expander más grande para ver mejor el texto */
