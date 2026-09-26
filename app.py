@@ -76,8 +76,7 @@ def generate_whatsapp_message(stock_data, apartment_name, missing_amenities):
         "",
         "🧴 AMENITIES Y PRODUCTOS",
         "",
-        "Paño de cocina",
-        "Bayeta amarilla",
+       
     ])
     if missing_amenities:
         lines.append("")
