@@ -24,12 +24,15 @@ def local_css(file_name):
 
 local_css("style.css") # Llama a la función para cargar nuestro CSS
 
-# Inicializar o cargar el estado del stock
-if (
-    not isinstance(st.session_state.get('stock_data'), dict)
-    or tuple(st.session_state['stock_data']) != tuple(STOCK_INICIAL)
-):
+# Inicializar o actualizar el estado del stock sin perder cantidades guardadas.
+stored_stock = st.session_state.get('stock_data')
+if not isinstance(stored_stock, dict):
     st.session_state['stock_data'] = deepcopy(STOCK_INICIAL)
+else:
+    for section, initial_items in STOCK_INICIAL.items():
+        section_stock = stored_stock.setdefault(section, {})
+        for item, initial_count in initial_items.items():
+            section_stock.setdefault(item, initial_count)
 # Inicializar la lista de amenities faltantes
 if 'missing_amenities' not in st.session_state:
     st.session_state['missing_amenities'] = []
