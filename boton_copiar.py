@@ -9,7 +9,7 @@ def copy_button(text_to_copy):
 
     # El código HTML y JavaScript para el botón
     button_html = f"""
-    <button id="copyBtn" onclick="copyToClipboard()">
+    <button id="copyBtn" onclick="copyToClipboard()" style="background-color:#4CAF50;color:white;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold;width:100%;min-height:48px;box-sizing:border-box;">
         📲 Copiar Mensaje al Portapapeles
     </button>
     <script>

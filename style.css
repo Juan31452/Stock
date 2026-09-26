@@ -1,7 +1,7 @@
 /* Cambiar la fuente y el color del título principal */
 h1 {
     color: #1E88E5; /* Un tono de azul moderno */
-    font-family: 'sans-serif';
+    font-family: sans-serif;
 }
 
 /* Estilizar el botón de copiar para que sea más llamativo y moderno */
@@ -15,6 +15,8 @@ h1 {
     font-size: 16px;
     font-weight: bold;
     width: 100%; /* Ocupar todo el ancho del contenedor */
+    min-height: 48px;
+    box-sizing: border-box;
     transition: background-color 0.3s ease;
 }
 
@@ -28,11 +30,13 @@ h1 {
      * En pantallas pequeñas, las 2 columnas de lencería se apilan para ser 1 sola.
      * Esto evita que el texto de la etiqueta se corte.
     */
-    div[data-testid="stHorizontalBlock"] > div:nth-of-type(1) {
+    div[data-testid="stHorizontalBlock"] {
         flex-direction: column;
+        gap: 12px;
     }
-    div[data-testid="stHorizontalBlock"] > div:nth-of-type(1) > div[data-testid="stVerticalBlock"] {
+    div[data-testid="stHorizontalBlock"] > div {
         width: 100% !important;
+        flex: 1 1 100% !important;
     }
 
     /* Estilo para el texto del placeholder en los inputs */
@@ -66,16 +70,6 @@ h1 {
     }
 
     /* Evitar cortes en las columnas */
-    div[data-testid="stHorizontalBlock"] > div:nth-of-type(1) {
-        flex-direction: column;
-        gap: 12px; /* Más espacio entre secciones */
-    }
-
-    /* Cada bloque ocupa ancho completo */
-    div[data-testid="stHorizontalBlock"] > div:nth-of-type(1) > div[data-testid="stVerticalBlock"] {
-        width: 100% !important;
-    }
-
     /* Inputs más grandes y cómodos */
     input[type="number"], input[type="text"] {
         font-size: 17px !important;
@@ -139,13 +133,14 @@ h1 {
     }
 
     /* Las columnas se apilan sí o sí */
-    div[data-testid="stHorizontalBlock"] > div:nth-of-type(1) {
+    div[data-testid="stHorizontalBlock"] {
         flex-direction: column !important;
         gap: 10px !important;
     }
 
-    div[data-testid="stHorizontalBlock"] > div:nth-of-type(1) > div[data-testid="stVerticalBlock"] {
+    div[data-testid="stHorizontalBlock"] > div {
         width: 100% !important;
+        flex: 1 1 100% !important;
     }
 
     /* Ajustar Expander en pantallas estrechas */
