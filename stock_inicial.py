@@ -19,8 +19,8 @@ STOCK_INICIAL = OrderedDict([
         ("Pequeñas", 0),
     ])),
     ("Toallas", OrderedDict([
-        ("Toallas grandes", 0),
-        ("Toallas pequeñas", 0),
+        ("Grandes", 0),
+        ("Pequeñas", 0),
         ("Alfombrines / pisa pies", 0),
     ])),
 ])
